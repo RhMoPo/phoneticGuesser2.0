@@ -11,7 +11,26 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <Header />
+      {children}
+      <Footer />
     </html>
   );
 }
+
+const Header = () => {
+  return (
+    <header>
+      <h1>Phonetic Guesser</h1>
+    </header>
+  );
+};
+
+const Footer = () => {
+  return (
+    <footer>
+      <p>© 2024 Phonetic Guesser</p>
+    </footer>
+  );
+};
+
