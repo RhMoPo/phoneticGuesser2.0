@@ -11,6 +11,7 @@ export default function Home() {
   const [phoneticsData, setPhoneticsData] = useState(null);
   const [randomWordError, setRandomWordError] = useState(null);
   const [phoneticsError, setPhoneticsError] = useState(null);
+  const [retryCount, setRetryCount] = useState(0); // Track the number of retries
 
   // Function to fetch a random word and its phonetic data
   const fetchRandomWord = async () => {
@@ -21,7 +22,8 @@ export default function Home() {
       ); // Fetch random word data from API
       if (!response.ok) {
         // Check if response is not okay
-        throw new Error("Failed to fetch random word"); // Throw an error if response is not okay
+        throw new Error("Failed to fetch random word");
+        // Throw an error if response is not okay
       }
       const data = await response.json(); // Parse response JSON
       const randomWord = data[0]; // Extract the random word
@@ -29,51 +31,50 @@ export default function Home() {
       // Construct the URL for the dictionary API call
       const dictionaryUrl = `https://api.dictionaryapi.dev/api/v2/entries/en/${randomWord}`;
       const dictionaryResponse = await fetch(dictionaryUrl); // Fetch the dictionary entry for the random word
+      console.log(
+        "🚀 ~ fetchRandomWord ~ dictionaryResponse:",
+        dictionaryResponse
+      );
       if (!dictionaryResponse.ok) {
         // Check if the response is successful
         throw new Error("Failed to fetch dictionary entry"); // Throw an error if response is not okay
       }
       const dictionaryData = await dictionaryResponse.json(); // Parse the JSON response to extract dictionary data
+      console.log("🚀 ~ fetchRandomWord ~ dictionaryData:", dictionaryData);
 
       // Extract word and phonetic information from the dictionary data
-      const phoneticData = {
-        word: dictionaryData[0]?.word || "N/A",
-        phonetic: dictionaryData[0]?.phonetic || "N/A",
-      };
+      const word = dictionaryData[0]?.word || "N/A";
+      const phonetic = dictionaryData[0]?.phonetic;
 
       // Set the fetched data to the state variables
-      setRandomWordData(phoneticData.word); // Set random word data
-      setPhoneticsData(phoneticData.phonetic); // Set phonetic data
+      setRandomWordData(word); // Set random word data
+
+      // Check if phonetic data is available and not "N/A"
+      if (phonetic && phonetic !== "N/A") {
+        setPhoneticsData(phonetic); // Set phonetic data
+      } else {
+        console.log("Phonetic data not available or is N/A. Retrying...");
+        fetchRandomWord(); // Retry fetching the random word
+      }
     } catch (error) {
       console.error(error); // Log the error
       setRandomWordError(error.message); // Set random word error state
+
+      // Retry fetching the random word up to 3 times
+      if (retryCount < 3) {
+        setRetryCount(retryCount + 1); // Increment retry count
+        console.log(`Retrying... Attempt ${retryCount + 1}`);
+        fetchRandomWord(); // Retry fetching the random word
+      } else {
+        console.error("Max retry count reached. Please try again later.");
+        // You can display an error message or handle the error as needed
+      }
     }
   };
 
   useEffect(() => {
-    if (!randomWordData) {
-      fetchRandomWord(); // Fetch random word data when the component mounts
-    }
+    fetchRandomWord(); // Fetch random word data when the component mounts
   }, []);
-
-  const handleSubmit = async () => {
-    if (randomWordData) {
-      try {
-        const response = await fetch(
-          `https://api.dictionaryapi.dev/api/v2/entries/en/${randomWordData}`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch phonetics");
-        }
-        const data = await response.json();
-        const phonetic = data[0]?.phonetics[0]?.text;
-        setPhoneticsData(phonetic);
-      } catch (error) {
-        console.error("Error fetching phonetics:", error);
-        setPhoneticsError(error.message);
-      }
-    }
-  };
 
   return (
     <>
@@ -86,9 +87,7 @@ export default function Home() {
             id="userAnswer"
             placeholder="Use the phonetic to guess the word..."
           />
-          <button id="submitBTN" onClick={handleSubmit}>
-            Submit
-          </button>
+          <button id="submitBTN">Submit</button>
         </div>
         <div className="phonetics" id="phoneticsOutput">
           <p>Random Word: {randomWordData}</p>
