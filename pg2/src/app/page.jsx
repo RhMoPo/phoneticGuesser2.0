@@ -21,17 +21,27 @@ export default function Home() {
     }
     const data = await response.json(); // Parse response JSON
 
-    return data[0]; // make dictionary API call here
-
+    const randomWord = data [0]; 
     // Construct the URL for the dictionary API call
-    
+    const dictionaryUrl = `https://api.dictionaryapi.dev/api/v2/entries/en/${randomWord}`;
+    console.log (dictionaryUrl);
     // Fetch the dictionary entry for the random word
-
+    const dictionaryResponse = await fetch(dictionaryUrl);
+    console.log (dictionaryResponse);
     // Check if the response is successful
+    if (!dictionaryResponse.ok) {
+    throw new Error("Failed to fetch dictionary entry");
+    }
 
     // Parse the JSON response to extract dictionary data
+    const dictionaryData = await dictionaryResponse.json();
 
     // Extract only the word and phonetic information
+    const phoneticData = {
+      word: dictionaryData[0]?.word || "N/A",
+      phonetic: dictionaryData[0]?.phonetic || "N/A",
+  };
+  
   }; 
 
 
@@ -52,6 +62,7 @@ export default function Home() {
       fetchData();
     }
   }, []);
+
 
   // Function to handle form submission
   const handleSubmit = async () => {
