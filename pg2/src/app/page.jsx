@@ -12,40 +12,47 @@ export default function Home() {
   const [randomWordError, setRandomWordError] = useState(null);
   const [phoneticsError, setPhoneticsError] = useState(null);
 
+  // Function to fetch a random word and its phonetic data
   const fetchRandomWord = async () => {
     try {
-      console.log("Fetching random word...");
+      console.log("Fetching random word..."); // Log message indicating random word fetch process has started
       const response = await fetch(
         "https://random-word-api.herokuapp.com/word"
-      );
+      ); // Fetch random word data from API
       if (!response.ok) {
-        throw new Error("Failed to fetch random word");
+        // Check if response is not okay
+        throw new Error("Failed to fetch random word"); // Throw an error if response is not okay
       }
-      const data = await response.json();
-      const randomWord = data[0];
+      const data = await response.json(); // Parse response JSON
+      const randomWord = data[0]; // Extract the random word
 
+      // Construct the URL for the dictionary API call
       const dictionaryUrl = `https://api.dictionaryapi.dev/api/v2/entries/en/${randomWord}`;
-      const dictionaryResponse = await fetch(dictionaryUrl);
+      const dictionaryResponse = await fetch(dictionaryUrl); // Fetch the dictionary entry for the random word
       if (!dictionaryResponse.ok) {
-        throw new Error("Failed to fetch dictionary entry");
+        // Check if the response is successful
+        throw new Error("Failed to fetch dictionary entry"); // Throw an error if response is not okay
       }
-      const dictionaryData = await dictionaryResponse.json();
+      const dictionaryData = await dictionaryResponse.json(); // Parse the JSON response to extract dictionary data
 
+      // Extract word and phonetic information from the dictionary data
       const phoneticData = {
         word: dictionaryData[0]?.word || "N/A",
         phonetic: dictionaryData[0]?.phonetic || "N/A",
       };
+
+      // Set the fetched data to the state variables
       setRandomWordData(phoneticData.word); // Set random word data
       setPhoneticsData(phoneticData.phonetic); // Set phonetic data
     } catch (error) {
-      console.error(error);
-      setRandomWordError(error.message);
+      console.error(error); // Log the error
+      setRandomWordError(error.message); // Set random word error state
     }
   };
 
   useEffect(() => {
     if (!randomWordData) {
-      fetchRandomWord();
+      fetchRandomWord(); // Fetch random word data when the component mounts
     }
   }, []);
 
