@@ -22,12 +22,23 @@ export default function Home() {
     const data = await response.json(); // Parse response JSON
 
     return data[0]; // make dictionary API call here
+
+    // Construct the URL for the dictionary API call
+    
+    // Fetch the dictionary entry for the random word
+
+    // Check if the response is successful
+
+    // Parse the JSON response to extract dictionary data
+
+    // Extract only the word and phonetic information
   }; 
+
+
 
   
 
   useEffect(() => {
-    console.log("useEffect");
     const fetchData = async () => {
       try {
         const randomWord = await fetchRandomWord();
