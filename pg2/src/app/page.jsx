@@ -87,7 +87,7 @@ export default function Home() {
             id="userAnswer"
             placeholder="Use the phonetic to guess the word..."
           />
-          <button id="submitBTN">Submit</button>
+          <button id="submitBTN">Guess</button>
         </div>
         <div className="phonetics" id="phoneticsOutput">
           <p>Random Word: {randomWordData}</p>
