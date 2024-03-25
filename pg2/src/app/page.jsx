@@ -56,6 +56,7 @@ export default function Home() {
         console.log("Phonetic data not available or is N/A. Retrying...");
         fetchRandomWord(); // Retry fetching the random word
       }
+      setUserAnswer("");
     } catch (error) {
       console.error(error); // Log the error
       setRandomWordError(error.message); // Set random word error state
@@ -79,7 +80,10 @@ export default function Home() {
   const handleGuess = ()=>{
     if (userAnswer.toLowerCase()===randomWordData){
       alert("Correct")
-    } else {alert("Wrong")}
+      fetchRandomWord();
+    } else {
+      alert("Wrong")
+    }
   };
 
   const handleInputChange = (event)=>{setUserAnswer(event.target.value)};
