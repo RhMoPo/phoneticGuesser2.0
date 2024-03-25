@@ -3,16 +3,16 @@ import Image from "next/image";
 import styles from "./page.module.css";
 import "./globals.css"
 import React, { useState, useEffect } from "react";
-import { Header } from "@/app/components/Header";
-import { Footer } from "@/app/components/Footer";
 
 export default function Home() {
   const [randomWordData, setRandomWordData] = useState(null); // Initialize with a loading message
   const [phoneticsData, setPhoneticsData] = useState(null);
   const [randomWordError, setRandomWordError] = useState(null);
   const [phoneticsError, setPhoneticsError] = useState(null);
+  const [userAnswer, setUserAnswer] = useState("");
   const [retryCount, setRetryCount] = useState(0); // Track the number of retries
 
+  
   // Function to fetch a random word and its phonetic data
   const fetchRandomWord = async () => {
     try {
@@ -76,6 +76,14 @@ export default function Home() {
     fetchRandomWord(); // Fetch random word data when the component mounts
   }, []);
 
+  const handleGuess = ()=>{
+    if (userAnswer.toLowerCase()===randomWordData){
+      alert("Correct")
+    } else {alert("Wrong")}
+  };
+
+  const handleInputChange = (event)=>{setUserAnswer(event.target.value)};
+
   return (
     <>
       <img src="example.png" alt="Example" />
@@ -85,8 +93,10 @@ export default function Home() {
             type="text"
             id="userAnswer"
             placeholder="Use the phonetic to guess the word..."
+            value={userAnswer}
+            onChange={handleInputChange}
           />
-          <button id="submitBTN">Guess</button>
+          <button id="submitBTN" onClick={handleGuess}>Guess</button>
         </div>
         <div className="phonetics" id="phoneticsOutput">
           <p>{phoneticsData}</p>
