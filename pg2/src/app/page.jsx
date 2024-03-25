@@ -78,7 +78,6 @@ export default function Home() {
 
   return (
     <>
-      <Header />
       <img src="example.png" alt="Example" />
       <div className="container">
         <div className="input-section">
@@ -90,11 +89,9 @@ export default function Home() {
           <button id="submitBTN">Guess</button>
         </div>
         <div className="phonetics" id="phoneticsOutput">
-          <p>Random Word: {randomWordData}</p>
-          <p>Phonetics: {phoneticsData}</p>
+          <p>{phoneticsData}</p>
         </div>
       </div>
-      <Footer />
     </>
   );
 }
