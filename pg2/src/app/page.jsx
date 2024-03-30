@@ -13,16 +13,18 @@ export default function Home() {
   const [isFetching, setIsFetching] = useState(true);
 
   useEffect(() => {
-    if (isFetching && refinedData.length < 10) {
+    if (isFetching && refinedData.length < 3) {
       getRandomWord();
     } else {
       setIsFetching(false); // Stop fetching
-      console.log("Reached the limit of 10 words or stopped manually.");
+      if(refinedData.length > 0) {
+        setPhoneticsData(refinedData[0].phonetic);
+      }
     }
   }, [refinedData.length, isFetching]); // React to changes in these values
 
   const getRandomWord = async () => {
-    const response = await fetch("https://random-word-api.herokuapp.com/word?length=3");
+    const response = await fetch("https://random-word-api.herokuapp.com/word");
     if (!response.ok) {
         throw new Error("Failed to fetch random word");
     }
@@ -71,12 +73,21 @@ export default function Home() {
   }, []);
 
 
-  const handleGuess = ()=>{
-    if (userAnswer.toLowerCase()===randomWordData){
-      alert("Correct")
-      getRandomWord();
+const handleGuess = () => {
+    if (refinedData.length > 0) {
+      const currentWord = refinedData[0].word;
+
+      if (userAnswer.trim().toLowerCase() === currentWord.toLowerCase()) {
+        alert("Correct!");
+        setRefinedData(prevData => prevData.slice(1)); // Remove the first word from the array
+        setIsFetching(true); // Trigger fetching if the array length is less than 10
+      } else {
+        alert("Wrong. Try again!");
+      }
+      // Clear the input field after processing the guess
+      setUserAnswer("");
     } else {
-      alert("Wrong")
+      alert("No words left to guess or not fetched yet.");
     }
   };
 
@@ -84,9 +95,8 @@ export default function Home() {
 
   return (
     <>
-      <img src="example.png" alt="Example" />
-      <div className="container">
-        <div className="input-section">
+      <div className={styles.container}>
+        <div className={styles.inputSection}>
           <input
             type="text"
             id="userAnswer"
@@ -96,9 +106,12 @@ export default function Home() {
           />
           <button id="submitBTN" onClick={handleGuess}>Guess</button>
         </div>
-        <div className="phonetics" id="phoneticsOutput">
-          <p>{phoneticsData}</p>
-        </div>
+        {/* Display the phonetic data extracted */}
+        {phoneticsData && (
+          <div className={styles.phonetics} id="phoneticsOutput">
+            <p>{phoneticsData}</p>
+          </div>
+        )}
       </div>
     </>
   );
