@@ -5,82 +5,76 @@ import "./globals.css"
 import React, { useState, useEffect } from "react";
 
 export default function Home() {
-  const [randomWordData, setRandomWordData] = useState(null); // Initialize with a loading message
+  const [randomWordData, setRandomWordData] = useState(null);
   const [phoneticsData, setPhoneticsData] = useState(null);
-  const [randomWordError, setRandomWordError] = useState(null);
-  const [phoneticsError, setPhoneticsError] = useState(null);
   const [userAnswer, setUserAnswer] = useState("");
-  const [retryCount, setRetryCount] = useState(0); // Track the number of retries
+  const [refinedData, setRefinedData] = useState([]);
+  console.log("🚀 ~ Home ~ refinedData:", refinedData)
+  const [isFetching, setIsFetching] = useState(true);
 
-  
-  // Function to fetch a random word and its phonetic data
-  const fetchRandomWord = async () => {
-    try {
-      console.log("Fetching random word..."); // Log message indicating random word fetch process has started
-      const response = await fetch(
-        "https://random-word-api.herokuapp.com/word"
-      ); // Fetch random word data from API
-      if (!response.ok) {
-        // Check if response is not okay
+  useEffect(() => {
+    if (isFetching && refinedData.length < 10) {
+      getRandomWord();
+    } else {
+      setIsFetching(false); // Stop fetching
+      console.log("Reached the limit of 10 words or stopped manually.");
+    }
+  }, [refinedData.length, isFetching]); // React to changes in these values
+
+  const getRandomWord = async () => {
+    const response = await fetch("https://random-word-api.herokuapp.com/word?length=3");
+    if (!response.ok) {
         throw new Error("Failed to fetch random word");
-        // Throw an error if response is not okay
-      }
-      const data = await response.json(); // Parse response JSON
-      const randomWord = data[0]; // Extract the random word
+    }
+    const data = await response.json();
+    const randomWord = data[0];
 
-      // Construct the URL for the dictionary API call
-      const dictionaryUrl = `https://api.dictionaryapi.dev/api/v2/entries/en/${randomWord}`;
-      const dictionaryResponse = await fetch(dictionaryUrl); // Fetch the dictionary entry for the random word
-      console.log(
-        "🚀 ~ fetchRandomWord ~ dictionaryResponse:",
-        dictionaryResponse
-      );
-      if (!dictionaryResponse.ok) {
-        // Check if the response is successful
-        throw new Error("Failed to fetch dictionary entry"); // Throw an error if response is not okay
-      }
-      const dictionaryData = await dictionaryResponse.json(); // Parse the JSON response to extract dictionary data
-      console.log("🚀 ~ fetchRandomWord ~ dictionaryData:", dictionaryData);
+    await getDictionaryWordAndPhonetic(randomWord);
+  };
 
-      // Extract word and phonetic information from the dictionary data
-      const word = dictionaryData[0]?.word || "N/A";
-      const phonetic = dictionaryData[0]?.phonetic;
+  const getDictionaryWordAndPhonetic = async (randomWord) => {
+    console.log("Navigating the dictionary API...");
+    const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${randomWord}`);
+    if (!response.ok) {
+        console.error("Failed to fetch the dictionary API for word:", randomWord);
+        if (isFetching) getRandomWord(); // Only retry if still fetching
+        return;
+    }
+    const data = await response.json();
+    if (data[0] && data[0].phonetics && data[0].phonetics.length > 0) {
+      const phonetic = data[0].phonetics.find(p => p.text)?.text;
+      if (phonetic) {
+          // Extract definitions
+          const definitions = data[0].meanings.map(meaning =>
+              meaning.definitions.map(def => def.definition)
+          ).flat(); // Flatten the array of arrays into a single array of definitions
 
-      // Set the fetched data to the state variables
-      setRandomWordData(word); // Set random word data
+          const newEntry = {
+              word: randomWord,
+              phonetic: phonetic,
+              definitions: definitions // Add definitions to the object
+          };
 
-      // Check if phonetic data is available and not "N/A"
-      if (phonetic && phonetic !== "N/A") {
-        setPhoneticsData(phonetic); // Set phonetic data
+          setRefinedData(prevData => [...prevData, newEntry]);
       } else {
-        console.log("Phonetic data not available or is N/A. Retrying...");
-        fetchRandomWord(); // Retry fetching the random word
+          console.log("Phonetic text not found for this word. Fetching another word...");
+          if (isFetching) getRandomWord(); // Only retry if still fetching
       }
-      setUserAnswer("");
-    } catch (error) {
-      console.error(error); // Log the error
-      setRandomWordError(error.message); // Set random word error state
-
-      // Retry fetching the random word up to 3 times
-      if (retryCount < 3) {
-        setRetryCount(retryCount + 1); // Increment retry count
-        console.log(`Retrying... Attempt ${retryCount + 1}`);
-        fetchRandomWord(); // Retry fetching the random word
-      } else {
-        console.error("Max retry count reached. Please try again later.");
-        // You can display an error message or handle the error as needed
-      }
+    } else {
+        console.log("Phonetic text not found for this word. Fetching another word...");
+        if (isFetching) getRandomWord(); // Only retry if still fetching
     }
   };
 
   useEffect(() => {
-    fetchRandomWord(); // Fetch random word data when the component mounts
+      getRandomWord(); // Fetch random word data when the component mounts
   }, []);
+
 
   const handleGuess = ()=>{
     if (userAnswer.toLowerCase()===randomWordData){
       alert("Correct")
-      fetchRandomWord();
+      getRandomWord();
     } else {
       alert("Wrong")
     }
