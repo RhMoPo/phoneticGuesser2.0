@@ -1,32 +1,13 @@
-
-
-
-
 body {
   font-family: Arial, sans-serif;
   background: linear-gradient(to bottom right, white, lightgrey);
   margin: auto 0;
-  padding: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
-}
-
-.container {
-  width: 80%;
-  max-width: 600px;
-  background-color: white;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.input-section {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
+  position: relative;
 }
 
 #userAnswer {
@@ -44,11 +25,18 @@ button {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.2s; /* Smooth transition for hover effect */
 }
 
-.phonetics {
-  margin-top: auto 20px;
+button:hover {
+  background-color: #0056b3;
 }
+
+.container {
+  position: relative; /* Make the parent container relative */
+}
+
+
 
 .answer {
   margin-bottom: 10px;
@@ -60,4 +48,32 @@ button {
 img {
   margin-bottom: 5%;
   border-radius: 10px;
+  margin-left: 100px;
+}
+
+
+.hintsContainer {
+  background-color: white; 
+  padding: 15px; 
+  border-radius: 5px; 
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+  margin-top: 10px; 
+  width: 100%; 
+  max-width: 600px;
+  position: absolute;
+  
+  left: 0;                                           
+  z-index: 10;
+   max-height: 150px; 
+  overflow-y: auto;
+}                                                                                                                                                    
+                                                     
+.hint {
+  padding: 10px 0; 
+  border-bottom: 1px solid #f0f0f0; 
+  word-wrap: break-word; 
+}
+
+.hint:last-child {
+  border-bottom: none;
 }
