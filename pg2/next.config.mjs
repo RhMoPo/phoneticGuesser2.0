@@ -1,8 +1,6 @@
 import { StrictMode } from 'react';
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-    output: "export",  // <=== enables static exports
-};
+const nextConfig = {reactStrictMode: false};
 
 export default nextConfig;
