@@ -1,8 +1,7 @@
 "use client";
-import Image from "next/image";
-import styles from "./page.module.css";
 import "./globals.css"
 import React, { useState, useEffect } from "react";
+
 
 export default function Home() {
 
@@ -95,7 +94,18 @@ const handleGuess = () => {
     } else {
       alert("No words left to guess or not fetched yet.");
     }
-  };
+};
+  
+  const handleSkip = () => {
+    if (refinedData.length > 0) { 
+      setRefinedData(prevData => prevData.slice(1));
+      setIsFetching(true)
+      setUserAnswer("");
+      setShowHints(false);
+    } else {
+      alert("No words left to guess or not fetched yet.");
+    }
+    }
 
   const handleInputChange = (event)=>{setUserAnswer(event.target.value)};
 
@@ -113,6 +123,9 @@ const handleGuess = () => {
       <button id="submitBTN" onClick={handleGuess}>Guess</button>
       {refinedData.length > 0 && (
         <button id="hintBTN" onClick={toggleHints} style={{ marginLeft: '10px' }}>Hint?</button>
+        )}
+      {refinedData.length > 0 && (
+          <button className="skip" id="skipBTN" onClick={handleSkip} style={{ marginLeft: '10px' }}>Skip</button>
       )}
     </div>
     {phoneticsData && (
