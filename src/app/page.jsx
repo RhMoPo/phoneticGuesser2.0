@@ -1,31 +1,31 @@
 "use client";
-import "./globals.css"
+import "./globals.css";
 import React, { useState, useEffect } from "react";
 
 
 export default function Home() {
-
   const [phoneticsData, setPhoneticsData] = useState(null);
   const [userAnswer, setUserAnswer] = useState("");
   const [refinedData, setRefinedData] = useState([]);
-  console.log("🚀 ~ Home ~ refinedData:", refinedData)
+ 
   const [isFetching, setIsFetching] = useState(true);
   const [showHints, setShowHints] = useState(false);
 
   const toggleHints = () => {
   setShowHints(!showHints);
-};
+  };
+  
   useEffect(() => {
-    if (isFetching && refinedData.length < 3) {
+    if (isFetching && refinedData.length < 5) {
       getRandomWord();
     } else {
-      setIsFetching(false); // Stop fetching
+      setIsFetching(false); 
       if(refinedData.length > 0) {
         setPhoneticsData(refinedData[0].phonetic);
       }
     }
-  }, [refinedData.length, isFetching]); // React to changes in these values
-
+  }, [refinedData.length, isFetching]); 
+              
   const getRandomWord = async () => {
     const response = await fetch("https://random-word-api.herokuapp.com/word");
     if (!response.ok) {

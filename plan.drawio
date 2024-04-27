@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="v2wqgrpe53CR1Hzca308" name="Page-1">
-        <mxGraphModel dx="-692" dy="1034" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="1634" dy="2050" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -180,9 +180,6 @@
                 </mxCell>
                 <mxCell id="64" value="SKIP BUTTON&amp;nbsp;" style="whiteSpace=wrap;html=1;sketch=1;hachureGap=4;jiggle=2;curveFitting=1;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;fontSize=20;" vertex="1" parent="1">
                     <mxGeometry x="3690" y="3070" width="120" height="60" as="geometry"/>
-                </mxCell>
-                <mxCell id="65" value="Text" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=20;fontFamily=Architects Daughter;sketch=1;hachureGap=4;jiggle=2;curveFitting=1;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;" vertex="1" parent="1">
-                    <mxGeometry x="6090" y="2500" width="60" height="40" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
